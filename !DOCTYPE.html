@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사랑하는 환희에게 🇬🇧</title>
+    
+    <!-- Open Graph (카카오톡, SNS 링크 공유 시 나타나는 타이틀 및 설명) -->
+    <meta property="og:title" content="사랑하는 환희에게 📮">
+    <meta property="og:description" content="환희를 위한 응원과 축복의 마음을 남겨주세요!">
+    <meta property="og:type" content="website">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Batang:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&family=Single+Day&family=Noto+Sans+KR:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase JS Client v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #fdfbf7;
+            background-image: radial-gradient(#e5e0d8 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .font-pen { font-family: 'Nanum Pen Script', cursive; font-size: 1.4rem; line-height: 1.3; }
+        .font-gaegu { font-family: 'Gaegu', cursive; font-size: 1.25rem; line-height: 1.3; }
+        .font-singleday { font-family: 'Single Day', cursive; font-size: 1.25rem; line-height: 1.3; }
+        .font-batang { font-family: 'Gowun Batang', serif; }
+        .font-myeongjo { font-family: 'Nanum Myeongjo', serif; }
+        .font-gothic { font-family: 'Nanum Gothic', sans-serif; }
+
+        .airmail-border {
+            background: repeating-linear-gradient(
+                135deg,
+                #c83b3b, #c83b3b 15px,
+                #ffffff 15px, #ffffff 25px,
+                #2b5282 25px, #2b5282 40px,
+                #ffffff 40px, #ffffff 50px
+            );
+            padding: 8px;
+            border-radius: 1rem;
+        }
+
+        .card-stamp {
+            background: radial-gradient(circle, #fcf8f2 60%, transparent 65%);
+            border: 2px dashed #94a3b8;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-overlay {
+            background-color: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+        }
+
+        /* 엽서 메시지 영역 스크롤 및 크기 고정 */
+        .card-message-box {
+            max-height: 130px;
+            overflow-y: auto;
+            word-break: break-words;
+            white-space: pre-line;
+            padding-right: 4px;
+        }
+
+        /* 스크롤바 디자인 */
+        .card-message-box::-webkit-scrollbar {
+            width: 4px;
+        }
+        .card-message-box::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .card-item { break-inside: avoid; page-break-inside: avoid; }
+            .card-message-box { max-height: none; overflow: visible; }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 pb-16">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="bg-amber-900 text-amber-50 shadow-md sticky top-0 z-30 no-print">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2.5">
+                <span class="text-xl">🇬🇧</span>
+                <h1 id="nav-banner-title" class="font-extrabold text-sm sm:text-base tracking-tight font-batang truncate">
+                    사랑하는 환희에게 📮
+                </h1>
+            </div>
+            <div class="flex items-center space-x-1.5 sm:space-x-2 text-xs">
+                <button onclick="openBannerModal()" class="bg-amber-800/80 hover:bg-amber-700 text-amber-100 px-2.5 py-1.5 rounded-lg font-semibold flex items-center space-x-1 transition border border-amber-700/50">
+                    <i class="fa-solid fa-gear"></i>
+                    <span class="hidden sm:inline">대문 설정</span>
+                </button>
+                <button onclick="openRecoveryModal()" class="bg-amber-800/80 hover:bg-amber-700 text-amber-100 px-2.5 py-1.5 rounded-lg font-semibold flex items-center space-x-1 transition border border-amber-700/50">
+                    <i class="fa-solid fa-database"></i>
+                    <span class="hidden sm:inline">복구/백업</span>
+                </button>
+                <button onclick="printPage()" class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1.5 rounded-lg font-bold flex items-center space-x-1 transition shadow-sm">
+                    <i class="fa-solid fa-print"></i>
+                    <span>인쇄/PDF</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-5xl mx-auto px-4 pt-6 space-y-6">
+
+        <!-- STATUS / DIAGNOSTIC ALERT BOX -->
+        <div id="status-alert" class="hidden rounded-xl p-3 text-xs font-semibold flex items-center justify-between no-print transition">
+            <div class="flex items-center space-x-2">
+                <i id="status-icon" class="fa-solid fa-circle-info text-base"></i>
+                <span id="status-message">시스템 상태 점검 중...</span>
+            </div>
+            <button onclick="closeStatusAlert()" class="opacity-70 hover:opacity-100 text-base px-1">&times;</button>
+        </div>
+
+        <!-- AIRMAIL VINTAGE BANNER -->
+        <div class="airmail-border shadow-xl">
+            <div class="bg-amber-50/95 rounded-lg p-6 sm:p-8 border border-amber-200 relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-24 h-24 sm:w-32 sm:h-32 opacity-15 pointer-events-none">
+                    <i class="fa-solid fa-plane-departure text-amber-950 text-8xl"></i>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+                    <div class="space-y-2">
+                        <div class="inline-flex items-center space-x-2 bg-rose-100 text-rose-800 text-xs font-black px-3 py-1 rounded-full border border-rose-200">
+                            <i class="fa-solid fa-passport"></i>
+                            <span id="banner-dday-badge">영국 출국 D-Day</span>
+                        </div>
+                        <h2 id="banner-main-title" class="text-2xl sm:text-3xl font-black text-amber-950 font-batang tracking-tight">
+                            사랑하는 환희에게
+                        </h2>
+                        <div class="pt-1">
+                            <p id="banner-verse" class="text-sm sm:text-base text-slate-700 font-myeongjo font-semibold leading-relaxed">
+                                “너 하는 일을 여호와께 맡겨라. 그러면 네가 계획하는 일이 이루어질 것이다.”
+                            </p>
+                            <p id="banner-ref" class="text-xs text-amber-900 font-bold mt-0.5">
+                                - 잠언 16:3 (쉬운성경) -
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- VINTAGE STAMP -->
+                    <div class="self-end md:self-center card-stamp p-3 rounded-xl flex flex-col items-center justify-center text-center w-28 h-28 shrink-0 text-slate-600 shadow-inner">
+                        <i class="fa-solid fa-stamp text-amber-800 text-lg mb-1"></i>
+                        <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500">AIR MAIL</span>
+                        <span class="text-xs font-black text-amber-900 mt-0.5">ROYAL MAIL</span>
+                        <span class="text-[9px] text-slate-400 font-mono">2026.09.17</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POSTCARD FORM SECTION -->
+        <section class="bg-white rounded-2xl p-5 sm:p-6 shadow-md border border-amber-200/80 no-print">
+            <h3 class="text-base font-bold text-amber-950 mb-4 flex items-center space-x-2">
+                <i class="fa-solid fa-pen-nib text-amber-600"></i>
+                <span>응원 엽서 작성하기</span>
+            </h3>
+
+            <form id="card-form" onsubmit="handleCardSubmit(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">보내는 사람 *</label>
+                        <input type="text" id="form-author" required placeholder="이름 또는 닉네임" class="w-full px-3.5 py-2 text-sm bg-amber-50/50 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">🔒 비밀번호 (수정/삭제용) *</label>
+                        <input type="password" id="form-password" required placeholder="본인 확인용 비밀번호" class="w-full px-3.5 py-2 text-sm bg-amber-50/50 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">✍️ 글씨체 선택</label>
+                        <select id="form-font" class="w-full px-3 py-2 text-xs border border-amber-200 rounded-lg bg-amber-50/50 font-bold focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="font-pen" class="font-pen">✒️ 펜글씨체 (Nanum Pen)</option>
+                            <option value="font-gaegu" class="font-gaegu">🎨 개구체 (Gaegu)</option>
+                            <option value="font-singleday" class="font-singleday">☀️ 싱글데이체 (Single Day)</option>
+                            <option value="font-batang" class="font-batang">📖 바탕체 (Gowun Batang)</option>
+                            <option value="font-myeongjo" class="font-myeongjo">📜 명조체 (Nanum Myeongjo)</option>
+                            <option value="font-gothic" class="font-gothic">🏢 고딕체 (Nanum Gothic)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">📷 추억 사진 첨부 (선택)</label>
+                        <input type="file" id="form-photo" accept="image/*" onchange="previewImage(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200">
+                    </div>
+                </div>
+
+                <!-- PHOTO PREVIEW CONTAINER -->
+                <div id="photo-preview-box" class="hidden relative w-24 h-24 rounded-lg overflow-hidden border-2 border-amber-300 shadow-sm">
+                    <img id="photo-preview-img" src="" alt="미리보기" class="w-full h-full object-cover">
+                    <button type="button" onclick="removePreviewPhoto()" class="absolute top-1 right-1 bg-rose-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow">
+                        &times;
+                    </button>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">✍️ 응원 메시지 *</label>
+                    <textarea id="form-message" required rows="4" placeholder="환희에게 따뜻한 응원과 축복의 한마디를 적어주세요!" class="w-full px-3.5 py-2.5 text-sm bg-amber-50/50 border border-amber-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none font-pen"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-3 rounded-xl shadow-md transition duration-200 flex items-center justify-center space-x-2 text-sm active:scale-[0.99]">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>✉️ 응원 엽서 보내기</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- POSTCARDS CONTAINER -->
+        <section class="space-y-4">
+            <div class="flex justify-between items-center px-1">
+                <h3 class="text-base font-bold text-amber-950 flex items-center space-x-2">
+                    <i class="fa-solid fa-envelope-open-text text-amber-700"></i>
+                    <span>모인 응원 엽서</span>
+                    <span id="cards-count-badge" class="bg-amber-200 text-amber-900 text-xs px-2 py-0.5 rounded-full font-black">0</span>
+                </h3>
+            </div>
+
+            <!-- CARDS GRID -->
+            <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Cards injected dynamically -->
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div id="empty-state" class="hidden bg-white/80 rounded-2xl p-10 text-center border-2 border-dashed border-amber-200 text-slate-500 space-y-3">
+                <i class="fa-solid fa-envelope-open text-3xl text-amber-300"></i>
+                <p class="text-sm font-semibold">아직 남겨진 응원 엽서가 없습니다.</p>
+                <p class="text-xs text-slate-400">첫 번째 응원의 한마디를 남겨주세요!</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- DELETE CARD MODAL -->
+    <div id="delete-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-amber-50 rounded-2xl max-w-sm w-full p-6 shadow-2xl border-2 border-amber-200 fade-in text-slate-800">
+            <h3 class="text-base font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-trash-can text-rose-500"></i>
+                <span>응원 엽서 삭제하기</span>
+            </h3>
+            <p class="text-xs text-slate-600 mb-4 break-keep">
+                엽서를 삭제하시려면 작성 시 설정한 <b>비밀번호</b>를 입력해 주세요.
+            </p>
+            <input type="password" id="delete-card-password-input" placeholder="비밀번호 입력" class="w-full px-3 py-2 text-sm border border-amber-300 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <div id="delete-card-error" class="text-xs text-rose-600 font-bold mb-3 hidden">비밀번호가 일치하지 않습니다.</div>
+            <div class="flex space-x-2">
+                <button onclick="closeDeleteModal()" class="w-1/2 bg-amber-200/60 hover:bg-amber-200 text-slate-700 py-2 rounded-lg text-xs font-bold">취소</button>
+                <button onclick="confirmDeleteCard()" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 rounded-lg text-xs shadow-md">삭제하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT CARD MODAL -->
+    <div id="edit-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-amber-50 rounded-2xl max-w-md w-full p-6 shadow-2xl border-2 border-amber-200 fade-in max-h-[90vh] overflow-y-auto text-slate-800">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-amber-200">
+                <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-pen-to-square text-amber-600"></i>
+                    <span>응원 엽서 수정하기</span>
+                </h3>
+                <button onclick="closeEditModal()" class="w-7 h-7 rounded-full bg-amber-200/60 hover:bg-amber-200 flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <form id="edit-form" onsubmit="handleCardEditSubmit(event)" class="space-y-4">
+                <input type="hidden" id="edit-card-id">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">보내는 사람 *</label>
+                        <input type="text" id="edit-author" required class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">🔒 비밀번호 확인 *</label>
+                        <input type="password" id="edit-password" required placeholder="작성 시 비밀번호" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">✍️ 글씨체 선택</label>
+                    <select id="edit-card-font" class="w-full px-3 py-2 text-xs border border-amber-200 rounded-lg bg-white font-bold">
+                        <option value="font-pen">✒️ 펜글씨체 (Nanum Pen)</option>
+                        <option value="font-gaegu">🎨 개구체 (Gaegu)</option>
+                        <option value="font-singleday">☀️ 싱글데이체 (Single Day)</option>
+                        <option value="font-batang">📖 바탕체 (Gowun Batang)</option>
+                        <option value="font-myeongjo">📜 명조체 (Nanum Myeongjo)</option>
+                        <option value="font-gothic">🏢 고딕체 (Nanum Gothic)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">📷 추억 사진 변경 (선택)</label>
+                    <input type="file" id="edit-photo" accept="image/*" onchange="previewEditImage(event)" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200">
+                </div>
+
+                <!-- EDIT PHOTO PREVIEW CONTAINER -->
+                <div id="edit-photo-preview-box" class="hidden relative w-24 h-24 rounded-lg overflow-hidden border-2 border-amber-300 shadow-sm">
+                    <img id="edit-photo-preview-img" src="" alt="수정 미리보기" class="w-full h-full object-cover">
+                    <button type="button" onclick="removeEditPreviewPhoto()" class="absolute top-1 right-1 bg-rose-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow" title="사진 삭제">
+                        &times;
+                    </button>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">응원 메시지 *</label>
+                    <textarea id="edit-message" required rows="4" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg resize-none font-pen"></textarea>
+                </div>
+
+                <div id="edit-card-error" class="text-xs text-rose-600 font-bold hidden">비밀번호가 일치하지 않습니다.</div>
+
+                <div class="pt-2 flex space-x-2">
+                    <button type="button" onclick="closeEditModal()" class="w-1/3 bg-amber-200/60 hover:bg-amber-200 text-slate-700 font-semibold py-2.5 rounded-lg text-sm">취소</button>
+                    <button type="submit" class="w-2/3 bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-2.5 rounded-lg shadow-md text-sm">수정 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- BANNER EDIT MODAL -->
+    <div id="banner-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-amber-50 rounded-2xl max-w-md w-full p-6 shadow-2xl border-2 border-amber-200 fade-in text-slate-800 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-amber-200">
+                <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-gear text-amber-600"></i>
+                    <span>대문 제목 & 성경 구절 변경</span>
+                </h3>
+                <button onclick="closeBannerModal()" class="w-7 h-7 rounded-full bg-amber-200/60 hover:bg-amber-200 flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <form id="banner-form" onsubmit="saveBannerSettings(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">관리자 비밀번호 *</label>
+                    <input type="password" id="banner-password" required placeholder="비밀번호 입력" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">상단 네비 타이틀</label>
+                    <input type="text" id="edit-nav-title" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">✈️ 출국 날짜 (D-Day)</label>
+                        <input type="date" id="edit-departure-date" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">대문 제목 글씨 크기</label>
+                        <select id="edit-title-size" class="w-full px-3 py-2 text-xs border border-amber-200 rounded-lg bg-white font-bold">
+                            <option value="text-xl sm:text-2xl">보통 (text-2xl)</option>
+                            <option value="text-2xl sm:text-3xl">크게 (text-3xl)</option>
+                            <option value="text-3xl sm:text-4xl">매우 크게 (text-4xl)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">대문 메인 제목</label>
+                    <input type="text" id="edit-main-title" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">대문 제목 글씨체</label>
+                    <select id="edit-title-font" class="w-full px-3 py-2 text-xs border border-amber-200 rounded-lg bg-white font-bold">
+                        <option value="font-batang">📖 바탕체 (Gowun Batang)</option>
+                        <option value="font-myeongjo">📜 명조체 (Nanum Myeongjo)</option>
+                        <option value="font-gaegu">🎨 개구체 (Gaegu)</option>
+                        <option value="font-pen">✒️ 펜글씨체 (Nanum Pen)</option>
+                        <option value="font-singleday">☀️ 싱글데이체 (Single Day)</option>
+                        <option value="font-gothic">🏢 고딕체 (Nanum Gothic)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">성경 구절 문구</label>
+                    <textarea id="edit-verse" rows="3" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg resize-none"></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">성경 출처</label>
+                        <input type="text" id="edit-ref" class="w-full px-3 py-2 text-sm bg-white border border-amber-200 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">성경 구절 글씨체</label>
+                        <select id="edit-verse-font" class="w-full px-3 py-2 text-xs border border-amber-200 rounded-lg bg-white font-bold">
+                            <option value="font-myeongjo">📜 명조체 (Nanum Myeongjo)</option>
+                            <option value="font-batang">📖 바탕체 (Gowun Batang)</option>
+                            <option value="font-gaegu">🎨 개구체 (Gaegu)</option>
+                            <option value="font-pen">✒️ 펜글씨체 (Nanum Pen)</option>
+                            <option value="font-gothic">🏢 고딕체 (Nanum Gothic)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="banner-error" class="text-xs text-rose-600 font-bold hidden">관리자 비밀번호가 일치하지 않습니다.</div>
+
+                <div class="pt-2 flex space-x-2">
+                    <button type="button" onclick="closeBannerModal()" class="w-1/3 bg-amber-200/60 hover:bg-amber-200 text-slate-700 font-semibold py-2.5 rounded-lg text-sm">취소</button>
+                    <button type="submit" class="w-2/3 bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-2.5 rounded-lg shadow-md text-sm">저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DATA RECOVERY / BACKUP MODAL -->
+    <div id="recovery-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-amber-50 rounded-2xl max-w-md w-full p-6 shadow-2xl border-2 border-amber-200 fade-in text-slate-800">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-amber-200">
+                <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-database text-amber-600"></i>
+                    <span>데이터 복구 & 백업 센터</span>
+                </h3>
+                <button onclick="closeRecoveryModal()" class="w-7 h-7 rounded-full bg-amber-200/60 hover:bg-amber-200 flex items-center justify-center text-slate-600 transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3.5 text-xs text-slate-700">
+                <p class="leading-relaxed">
+                    데이터베이스 연결이 일시 차단되거나 브라우저 쿠키 문제로 글이 보이지 않을 때 복원할 수 있습니다.
+                </p>
+
+                <div class="bg-white p-3 rounded-xl border border-amber-200 space-y-2">
+                    <span class="font-bold text-amber-950 block">1. 이 브라우저의 로컬 기록에서 복구</span>
+                    <button onclick="recoverFromLocalStorage()" class="w-full bg-amber-200/80 hover:bg-amber-200 text-amber-950 font-bold py-2 rounded-lg transition">
+                        🔄 로컬 저장소 엽서 즉시 복구하기
+                    </button>
+                </div>
+
+                <div class="bg-white p-3 rounded-xl border border-amber-200 space-y-2">
+                    <span class="font-bold text-amber-950 block">2. 파일로 백업 및 복원</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="downloadJsonBackup()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold py-2 rounded-lg transition">
+                            📥 JSON 백업
+                        </button>
+                        <label class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg transition text-center cursor-pointer block">
+                            📤 JSON 복원
+                            <input type="file" accept=".json" onchange="restoreFromJson(event)" class="hidden">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://bfdbrsmbswglcjvuvmte.supabase.co";
+        const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmZGJyc21ic3dnbGNqdnV2bXRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2MjUyNjUsImV4cCI6MjEwNTIwMTI2NX0.gUNaTxJfabeMpep_rHsGB2hVAV10Jq1pItiKUq4ZZ-g"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcWNxaHVzdnBrY3J4ZWdnc3ZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1MjM0MzUsImV4cCI6MjEwNTA5OTQzNX0.psk8Vebs79iiWsTYk942azNhAxdrdhvtJJ9EHIbkLu4";
+        const ADMIN_PASSWORD = "1234";
+
+        // --- GLOBAL STATE ---
+        let supabaseClient = null;
+        let isSupabaseActive = false;
+        let cardsList = [];
+        let bannerConfig = {
+            navTitle: "사랑하는 환희에게 📮",
+            mainTitle: "사랑하는 환희에게",
+            verse: "“너 하는 일을 여호와께 맡겨라. 그러면 네가 계획하는 일이 이루어질 것이다.”",
+            reference: "- 잠언 16:3 (쉬운성경) -",
+            departureDate: "2026-09-17",
+            titleFont: "font-batang",
+            titleSize: "text-2xl sm:text-3xl",
+            verseFont: "font-myeongjo"
+        };
+
+        let tempPhotoBase64 = "";
+        let editTempPhotoBase64 = "";
+        let targetDeleteCardId = null;
+        let targetEditCardId = null;
+
+        function safeJsonParse(str, fallback = null) {
+            if (!str || typeof str !== "string" || !str.trim()) return fallback;
+            try {
+                return JSON.parse(str);
+            } catch (err) {
+                console.warn("JSON parse error safely handled:", err);
+                return fallback;
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", async () => {
+            initSupabase();
+            loadLocalBannerConfig();
+            await loadCardsData();
+        });
+
+        function initSupabase() {
+            try {
+                if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    isSupabaseActive = true;
+                    showStatusAlert("Supabase 데이터베이스 연결 완료", "success");
+                } else {
+                    showStatusAlert("로컬 저장소 전용 모드로 동작 중입니다.", "info");
+                }
+            } catch (err) {
+                console.warn("Supabase init error:", err);
+                isSupabaseActive = false;
+                showStatusAlert("DB 접속 오류. 로컬 저장소를 사용합니다.", "warning");
+            }
+        }
+
+        function showStatusAlert(msg, type = "info") {
+            const box = document.getElementById("status-alert");
+            const msgEl = document.getElementById("status-message");
+            const iconEl = document.getElementById("status-icon");
+
+            box.classList.remove("hidden", "bg-emerald-100", "text-emerald-800", "bg-amber-100", "text-amber-800", "bg-rose-100", "text-rose-800");
+
+            if (type === "success") {
+                box.classList.add("bg-emerald-100", "text-emerald-800");
+                iconEl.className = "fa-solid fa-circle-check text-emerald-600";
+            } else if (type === "warning") {
+                box.classList.add("bg-rose-100", "text-rose-800");
+                iconEl.className = "fa-solid fa-triangle-exclamation text-rose-600";
+            } else {
+                box.classList.add("bg-amber-100", "text-amber-800");
+                iconEl.className = "fa-solid fa-circle-info text-amber-600";
+            }
+
+            msgEl.textContent = msg;
+        }
+
+        function closeStatusAlert() {
+            document.getElementById("status-alert").classList.add("hidden");
+        }
+
+        async function loadCardsData() {
+            let loadedFromDb = false;
+
+            if (isSupabaseActive && supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from("cards").select("*").order("id", { ascending: false });
+                    
+                    if (error) {
+                        console.error("Supabase load error:", error);
+                        showStatusAlert("🚨 DB 불러오기 실패: " + error.message, "warning");
+                    } else if (Array.isArray(data)) {
+                        const localCards = safeJsonParse(localStorage.getItem("hwanhee_cards_backup"), []);
+                        
+                        if (data.length === 0 && localCards.length > 0) {
+                            cardsList = localCards;
+                            syncLocalCardsToSupabase(localCards);
+                        } else {
+                            const dbIds = new Set(data.map(c => String(c.id)));
+                            const unsynced = localCards.filter(c => !dbIds.has(String(c.id)));
+                            cardsList = [...unsynced, ...data];
+                            if (unsynced.length > 0) {
+                                syncLocalCardsToSupabase(unsynced);
+                            }
+                        }
+                        
+                        saveToLocalStorage(cardsList);
+                        loadedFromDb = true;
+                    }
+                } catch (e) {
+                    console.warn("Supabase load cards failed:", e);
+                }
+            }
+
+            if (!loadedFromDb) {
+                const localData = localStorage.getItem("hwanhee_cards_backup");
+                cardsList = safeJsonParse(localData, []);
+            }
+
+            renderCards();
+        }
+
+        async function syncLocalCardsToSupabase(cardsToSync) {
+            if (!isSupabaseActive || !supabaseClient || !cardsToSync || cardsToSync.length === 0) return;
+            try {
+                let { error } = await supabaseClient.from("cards").upsert(cardsToSync, { onConflict: 'id' });
+                
+                if (error && (error.code === 'PGRST204' || (error.message && error.message.includes('date')))) {
+                    const cardsWithoutDate = cardsToSync.map(({ date, ...rest }) => rest);
+                    const retry = await supabaseClient.from("cards").upsert(cardsWithoutDate, { onConflict: 'id' });
+                    error = retry.error;
+                }
+
+                if (error) {
+                    console.warn("Auto-sync to Supabase failed:", error.message);
+                }
+            } catch (err) {
+                console.warn("Auto-sync exception:", err);
+            }
+        }
+
+        function saveToLocalStorage(data) {
+            try {
+                localStorage.setItem("hwanhee_cards_backup", JSON.stringify(data));
+            } catch (e) {
+                console.error("LocalStorage save failed:", e);
+            }
+        }
+
+        function renderCards() {
+            const grid = document.getElementById("cards-grid");
+            const countBadge = document.getElementById("cards-count-badge");
+            const emptyState = document.getElementById("empty-state");
+
+            countBadge.textContent = cardsList.length;
+
+            if (cardsList.length === 0) {
+                grid.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+
+            grid.innerHTML = cardsList.map(card => {
+                const photoHtml = card.photo ? 
+                    '<div class="w-full h-40 rounded-xl overflow-hidden border border-amber-200 shadow-inner my-2">' +
+                        '<img src="' + card.photo + '" alt="첨부 사진" class="w-full h-full object-cover">' +
+                    '</div>' : '';
+
+                const cardFontClass = card.font || 'font-pen';
+                const cardLikes = card.likes || 0;
+                const cardDate = card.date || (card.created_at ? card.created_at.substring(0, 10).replace(/-/g, '.') : "2026.09.17");
+
+                return `
+                <div class="bg-amber-50/90 rounded-2xl p-4 sm:p-5 border border-amber-200/90 shadow-sm hover:shadow-md transition card-item flex flex-col justify-between space-y-2 fade-in relative overflow-hidden">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-start text-xs text-amber-900/70 border-b border-amber-200/60 pb-2">
+                            <span class="font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-envelope text-amber-600"></i>
+                                AIR MAIL
+                            </span>
+                            <span class="font-mono text-[11px]">${cardDate}</span>
+                        </div>
+
+                        ${photoHtml}
+
+                        <div class="card-message-box">
+                            <p class="text-slate-800 ${cardFontClass} pt-1">
+                                ${escapeHtml(card.message)}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-amber-200/80 flex justify-between items-center">
+                        <span class="text-xs font-bold text-amber-950 font-batang truncate">From. ${escapeHtml(card.author)}</span>
+                        <div class="flex items-center space-x-1.5">
+                            <button onclick="likeCard('${card.id}')" class="bg-amber-100/80 hover:bg-amber-200 text-rose-600 px-2 py-1 rounded-lg text-xs font-bold flex items-center space-x-1 active:scale-95 transition">
+                                <i class="fa-solid fa-heart text-rose-500 text-[11px]"></i>
+                                <span>${cardLikes}</span>
+                            </button>
+                            <button onclick="openEditModal('${card.id}')" title="수정하기" class="bg-slate-200/70 hover:bg-amber-100 hover:text-amber-700 text-slate-500 px-2 py-1 rounded-lg text-xs font-bold transition active:scale-95">
+                                <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                            </button>
+                            <button onclick="openDeleteModal('${card.id}')" title="삭제하기" class="bg-slate-200/70 hover:bg-rose-100 hover:text-rose-600 text-slate-500 px-2 py-1 rounded-lg text-xs font-bold transition active:scale-95">
+                                <i class="fa-solid fa-trash-can text-[11px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join("");
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement("canvas");
+                    const maxDim = 600;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    tempPhotoBase64 = canvas.toDataURL("image/jpeg", 0.6);
+                    document.getElementById("photo-preview-img").src = tempPhotoBase64;
+                    document.getElementById("photo-preview-box").classList.remove("hidden");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePreviewPhoto() {
+            tempPhotoBase64 = "";
+            document.getElementById("form-photo").value = "";
+            document.getElementById("photo-preview-box").classList.add("hidden");
+        }
+
+        async function handleCardSubmit(e) {
+            e.preventDefault();
+
+            const author = document.getElementById("form-author").value.trim();
+            const password = document.getElementById("form-password").value.trim();
+            const font = document.getElementById("form-font").value;
+            const message = document.getElementById("form-message").value.trim();
+
+            if (!author || !password || !message) return;
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+
+            const newCard = {
+                id: Date.now(),
+                author: author,
+                password: password,
+                font: font,
+                message: message,
+                photo: tempPhotoBase64 || null,
+                likes: 0,
+                date: dateStr
+            };
+
+            cardsList.unshift(newCard);
+            saveToLocalStorage(cardsList);
+            renderCards();
+
+            // Reset form inputs
+            document.getElementById("form-author").value = "";
+            document.getElementById("form-password").value = "";
+            document.getElementById("form-message").value = "";
+            removePreviewPhoto();
+
+            // Sync with Supabase if connected
+            if (isSupabaseActive && supabaseClient) {
+                try {
+                    let { error } = await supabaseClient.from("cards").insert([newCard]);
+                    if (error && (error.code === 'PGRST204' || (error.message && error.message.includes('date')))) {
+                        const { date, ...cardWithoutDate } = newCard;
+                        const retry = await supabaseClient.from("cards").insert([cardWithoutDate]);
+                        error = retry.error;
+                    }
+
+                    if (error) {
+                        showStatusAlert("⚠️ DB 저장 중 일부 경고 발생: " + error.message, "warning");
+                    } else {
+                        showStatusAlert("✉️ 응원 엽서가 정상 등록되었습니다!", "success");
+                    }
+                } catch (err) {
+                    console.warn("Supabase insert exception:", err);
+                    showStatusAlert("로컬 저장소에 보관되었습니다.", "info");
+                }
+            } else {
+                showStatusAlert("✉️ 로컬에 응원 엽서가 등록되었습니다!", "success");
+            }
+        }
+
+        async function likeCard(cardId) {
+            const card = cardsList.find(c => String(c.id) === String(cardId));
+            if (!card) return;
+
+            card.likes = (card.likes || 0) + 1;
+            saveToLocalStorage(cardsList);
+            renderCards();
+
+            if (isSupabaseActive && supabaseClient) {
+                try {
+                    await supabaseClient.from("cards").update({ likes: card.likes }).eq("id", cardId);
+                } catch (e) {
+                    console.warn("Supabase like update error:", e);
+                }
+            }
+        }
+
+        function calculateDDay(targetDateStr) {
+            if (!targetDateStr) return "영국 출국 D-Day";
+            const target = new Date(targetDateStr);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            target.setHours(0, 0, 0, 0);
+            
+            const diffTime = target - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) return "영국 출국 D-Day (D-Day)";
+            if (diffDays > 0) return `영국 출국 D-${diffDays}`;
+            return `영국 출국 D+${Math.abs(diffDays)}`;
+        }
+
+        function openBannerModal() {
+            document.getElementById("edit-nav-title").value = bannerConfig.navTitle;
+            document.getElementById("edit-main-title").value = bannerConfig.mainTitle;
+            document.getElementById("edit-verse").value = bannerConfig.verse;
+            document.getElementById("edit-ref").value = bannerConfig.reference;
+            document.getElementById("edit-departure-date").value = bannerConfig.departureDate || "2026-09-17";
+            document.getElementById("edit-title-font").value = bannerConfig.titleFont || "font-batang";
+            document.getElementById("edit-title-size").value = bannerConfig.titleSize || "text-2xl sm:text-3xl";
+            document.getElementById("edit-verse-font").value = bannerConfig.verseFont || "font-myeongjo";
+            document.getElementById("banner-password").value = "";
+            document.getElementById("banner-error").classList.add("hidden");
+
+            document.getElementById("banner-modal").classList.remove("hidden");
+        }
+
+        function closeBannerModal() {
+            document.getElementById("banner-modal").classList.add("hidden");
+        }
+
+        function saveBannerSettings(e) {
+            e.preventDefault();
+
+            const pw = document.getElementById("banner-password").value;
+            if (pw !== ADMIN_PASSWORD) {
+                document.getElementById("banner-error").classList.remove("hidden");
+                return;
+            }
+
+            bannerConfig.navTitle = document.getElementById("edit-nav-title").value;
+            bannerConfig.mainTitle = document.getElementById("edit-main-title").value;
+            bannerConfig.verse = document.getElementById("edit-verse").value;
+            bannerConfig.reference = document.getElementById("edit-ref").value;
+            bannerConfig.departureDate = document.getElementById("edit-departure-date").value;
+            bannerConfig.titleFont = document.getElementById("edit-title-font").value;
+            bannerConfig.titleSize = document.getElementById("edit-title-size").value;
+            bannerConfig.verseFont = document.getElementById("edit-verse-font").value;
+
+            localStorage.setItem("hwanhee_banner_config", JSON.stringify(bannerConfig));
+            applyBannerConfig();
+
+            closeBannerModal();
+            showStatusAlert("대문 설정이 업데이트되었습니다.", "success");
+        }
+
+        function loadLocalBannerConfig() {
+            const saved = localStorage.getItem("hwanhee_banner_config");
+            const parsed = safeJsonParse(saved, null);
+            if (parsed) {
+                bannerConfig = { ...bannerConfig, ...parsed };
+            }
+            applyBannerConfig();
+        }
+
+        function applyBannerConfig() {
+            document.getElementById("nav-banner-title").textContent = bannerConfig.navTitle;
+            
+            const mainTitleEl = document.getElementById("banner-main-title");
+            mainTitleEl.textContent = bannerConfig.mainTitle;
+            mainTitleEl.className = `${bannerConfig.titleSize || 'text-2xl sm:text-3xl'} font-black text-amber-950 ${bannerConfig.titleFont || 'font-batang'} tracking-tight`;
+
+            const verseEl = document.getElementById("banner-verse");
+            verseEl.textContent = bannerConfig.verse;
+            verseEl.className = `text-sm sm:text-base text-slate-700 ${bannerConfig.verseFont || 'font-myeongjo'} font-semibold leading-relaxed`;
+
+            document.getElementById("banner-ref").textContent = bannerConfig.reference;
+
+            if (bannerConfig.departureDate) {
+                document.getElementById("banner-dday-badge").textContent = calculateDDay(bannerConfig.departureDate);
+                const stampDate = document.querySelector(".card-stamp .font-mono");
+                if (stampDate) {
+                    stampDate.textContent = bannerConfig.departureDate.replace(/-/g, ".");
+                }
+            }
+        }
+
+        function openDeleteModal(cardId) {
+            targetDeleteCardId = cardId;
+            document.getElementById("delete-card-password-input").value = "";
+            document.getElementById("delete-card-error").classList.add("hidden");
+            document.getElementById("delete-modal").classList.remove("hidden");
+        }
+
+        function closeDeleteModal() {
+            document.getElementById("delete-modal").classList.add("hidden");
+            targetDeleteCardId = null;
+        }
+
+        async function confirmDeleteCard() {
+            if (!targetDeleteCardId) return;
+
+            const inputPw = document.getElementById("delete-card-password-input").value;
+            const card = cardsList.find(c => String(c.id) === String(targetDeleteCardId));
+            if (!card) return;
+
+            if (inputPw !== String(card.password) && inputPw !== ADMIN_PASSWORD) {
+                document.getElementById("delete-card-error").classList.remove("hidden");
+                return;
+            }
+
+            cardsList = cardsList.filter(c => String(c.id) !== String(targetDeleteCardId));
+            saveToLocalStorage(cardsList);
+            renderCards();
+
+            if (isSupabaseActive && supabaseClient) {
+                try {
+                    await supabaseClient.from("cards").delete().eq("id", targetDeleteCardId);
+                } catch (err) {
+                    console.warn("Supabase delete error:", err);
+                }
+            }
+
+            closeDeleteModal();
+            showStatusAlert("엽서가 삭제되었습니다.", "info");
+        }
+
+        function openEditModal(cardId) {
+            targetEditCardId = cardId;
+            const card = cardsList.find(c => String(c.id) === String(cardId));
+            if (!card) return;
+
+            document.getElementById("edit-card-id").value = card.id;
+            document.getElementById("edit-author").value = card.author || "";
+            document.getElementById("edit-password").value = "";
+            document.getElementById("edit-card-font").value = card.font || "font-pen";
+            document.getElementById("edit-message").value = card.message || "";
+            document.getElementById("edit-card-error").classList.add("hidden");
+
+            editTempPhotoBase64 = card.photo || "";
+            document.getElementById("edit-photo").value = "";
+            if (editTempPhotoBase64) {
+                document.getElementById("edit-photo-preview-img").src = editTempPhotoBase64;
+                document.getElementById("edit-photo-preview-box").classList.remove("hidden");
+            } else {
+                document.getElementById("edit-photo-preview-box").classList.add("hidden");
+            }
+
+            document.getElementById("edit-modal").classList.remove("hidden");
+        }
+
+        function previewEditImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement("canvas");
+                    const maxDim = 500;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    editTempPhotoBase64 = canvas.toDataURL("image/jpeg", 0.5);
+                    document.getElementById("edit-photo-preview-img").src = editTempPhotoBase64;
+                    document.getElementById("edit-photo-preview-box").classList.remove("hidden");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeEditPreviewPhoto() {
+            editTempPhotoBase64 = "";
+            document.getElementById("edit-photo").value = "";
+            document.getElementById("edit-photo-preview-box").classList.add("hidden");
+        }
+
+        function closeEditModal() {
+            document.getElementById("edit-modal").classList.add("hidden");
+            targetEditCardId = null;
+            editTempPhotoBase64 = "";
+        }
+
+        async function handleCardEditSubmit(e) {
+            e.preventDefault();
+            if (!targetEditCardId) return;
+
+            const inputPw = document.getElementById("edit-password").value;
+            const card = cardsList.find(c => String(c.id) === String(targetEditCardId));
+            if (!card) return;
+
+            if (inputPw !== String(card.password) && inputPw !== ADMIN_PASSWORD) {
+                document.getElementById("edit-card-error").classList.remove("hidden");
+                return;
+            }
+
+            card.author = document.getElementById("edit-author").value;
+            card.font = document.getElementById("edit-card-font").value;
+            card.message = document.getElementById("edit-message").value;
+            card.photo = editTempPhotoBase64 || null;
+
+            saveToLocalStorage(cardsList);
+            renderCards();
+
+            if (isSupabaseActive && supabaseClient) {
+                try {
+                    await supabaseClient.from("cards").update({
+                        author: card.author,
+                        font: card.font,
+                        message: card.message,
+                        photo: card.photo
+                    }).eq("id", targetEditCardId);
+                } catch (err) {
+                    console.warn("Supabase edit update error:", err);
+                }
+            }
+
+            closeEditModal();
+            showStatusAlert("엽서가 수정되었습니다.", "success");
+        }
+
+        function openRecoveryModal() {
+            document.getElementById("recovery-modal").classList.remove("hidden");
+        }
+
+        function closeRecoveryModal() {
+            document.getElementById("recovery-modal").classList.add("hidden");
+        }
+
+        function recoverFromLocalStorage() {
+            const localData = localStorage.getItem("hwanhee_cards_backup");
+            const parsed = safeJsonParse(localData, null);
+            if (parsed && Array.isArray(parsed)) {
+                cardsList = parsed;
+                renderCards();
+                closeRecoveryModal();
+                showStatusAlert("로컬 저장소 데이터를 복구했습니다!", "success");
+            } else {
+                alert("이 브라우저에 저장된 백업 데이터가 없습니다.");
+            }
+        }
+
+        function downloadJsonBackup() {
+            const blob = new Blob([JSON.stringify(cardsList, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `hwanhee_rolling_paper_backup_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function restoreFromJson(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                const imported = safeJsonParse(evt.target.result, null);
+                if (imported && Array.isArray(imported)) {
+                    cardsList = imported;
+                    saveToLocalStorage(cardsList);
+                    renderCards();
+                    closeRecoveryModal();
+                    showStatusAlert("JSON 파일에서 데이터를 정상적으로 복원했습니다!", "success");
+                } else {
+                    alert("올바른 JSON 데이터 파일이 아닙니다.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function printPage() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
